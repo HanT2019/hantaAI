@@ -40,15 +40,6 @@ PrivateTmp=true　→　PrivateTmp=false
 */
 $ sudo systemctl daemon-reload
 
-// crontab setting
-$ echo '@reboot /home/utagoe-user/hantaAI/run_containers.sh' | sudo crontab
-
-// disable unused containerd plugins
-$ sudo vi /etc/containerd/config.toml
-/*
-disabled_plugins = ["cri", "btrfs", "zfs", "otlp", "devmapper", "tracing"]
-*/
-
 // install cuda
 $ cd ~
 $ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin

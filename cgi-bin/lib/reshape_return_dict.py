@@ -17,6 +17,7 @@ def reshape(return_dict, method=Method.LATEST):
     for k, v in return_dict.items():
         if k == 'frames':
             new_k, new_v = aggregate(v, method)
+            # reshaped_dict[new_k] = new_v
             reshaped_dict['judgements'] = {new_k: new_v}
 
         else:
@@ -33,6 +34,7 @@ def reshape_signal(return_dict):
     for k, v in return_dict.items():
         if k == 'frames':
             new_k, new_v = aggregate_signal(v)
+            # reshaped_dict[new_k] = new_v
             reshaped_dict['judgements'] = {new_k: new_v}
 
         else:
@@ -52,12 +54,14 @@ def aggregate(return_dict, method):
 
     if method == Method.ONE_SEC_MODE:
         return aggregate_by_mode_on_first_N_frames(return_dict, n_frames=10)
+        # return aggregate_by_mode_1sec(return_dict)
 
     if method == Method.TWO_SEC_MODE:
         return aggregate_by_mode_on_first_N_frames(return_dict, n_frames=20)
 
     if method == Method.THREE_SEC_MODE:
         return aggregate_by_mode_on_first_N_frames(return_dict, n_frames=30)
+        # return aggregate_by_mode_3sec(return_dict)
 
     return 'frames', return_dict
 
@@ -121,6 +125,44 @@ def aggregate_by_mode_on_first_N_frames(frame_list, n_frames=10):
     return_value = max(values_count, key=values_count.get)
 
     return return_key, return_value
+
+# def aggregate_by_mode_1sec(frame_list):
+#     return_key = ''
+#     return_value = ''
+#
+#     if len(frame_list) > 10:
+#         frame_list = frame_list[0:10]
+#
+#     values_count = {}
+#     for frame in frame_list:
+#         for k, v in frame.items():
+#             if k != 'no':
+#                 return_key = k
+#                 values_count[v] = values_count.get(v, 0) + 1
+#                 break
+#
+#     return_value = max(values_count, key=values_count.get)
+#
+#     return return_key, return_value
+#
+# def aggregate_by_mode_3sec(frame_list):
+#     return_key = ''
+#     return_value = ''
+#
+#     if len(frame_list) > 30:
+#         frame_list = frame_list[0:30]
+#
+#     values_count = {}
+#     for frame in frame_list:
+#         for k, v in frame.items():
+#             if k != 'no':
+#                 return_key = k
+#                 values_count[v] = values_count.get(v, 0) + 1
+#                 break
+#
+#     return_value = max(values_count, key=values_count.get)
+#
+#     return return_key, return_value
 
 def aggregate_signal(frame_list):
     if len(frame_list) < 50:

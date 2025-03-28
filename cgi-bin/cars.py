@@ -13,7 +13,7 @@ from lib.file_output import bucket_setup_for_download, s3_setup, write_status
 from lib.inference_manager import get_inference_name
 
 from lib.mylogger import getLogger
-logger = getLogger(__file__)
+logger = getLogger(__name__)
 
 def return_response(code, message, desc):
     return_dict = {}
@@ -39,82 +39,82 @@ logger.info(f'Server Address: {socket.gethostbyname(socket.gethostname())}')
 logger.info(f'Request Date: {datetime.datetime.now()}, Body: {data}, To: {__file__}')
 logger.info(f'Disk Usage: Used: {used / (2**30)}GiB, Free: {free / (2**30)}GiB')
 if free / (2**30) < 0.5:
-    logger.warning('Low disk space.')
+    logger.warning('Low disk capacity')
 
 if "inference_process" in (p.name() for p in psutil.process_iter()):
-    logger.warning('Process is busy.')
-    return_response(1400, "Process is busy.", "Process is busy.")
+    logger.warning('Process is busy')
+    return_response(1400, "Process is busy.", "Please wait a minute.")
     sys.exit()
 
 try:
     request_json = json.loads(data)
 except:
-    logger.error('The JSON format of the request is invalid.')
-    return_response(999, "Invalid json_format", "The JSON format of the request is invalid.")
+    logger.error('Invalid json_format')
+    return_response(999, "Invalid json_format", "Invalid json_format")
     sys.exit()
 
 try:
     param_name="id"
     accident_id = request_json["id"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="inference_type"
     inference_type = request_json["inference_type"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="input_dir"
     s3_input_dir = request_json["input_dir"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="input_file_last_no"
     s3_input_length = request_json["input_file_last_no"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="output_file"
     s3_output_file = request_json["output_file"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="progress_file"
     s3_progress_file = request_json["progress_file"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="vertical_angle"
     vertical_angle = request_json["vertical_angle"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 try:
     param_name="horizontal_angle"
     horizontal_angle = request_json["horizontal_angle"]
 except:
-    logger.error(f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
-    return_response(999, "Invalid parameter", f'"{param_name}" not found. Please include the correct "{param_name}" in the request JSON.')
+    logger.error(f'Invalid parameter {param_name}')
+    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
 if len(bytes(accident_id, encoding='utf-8')) != len(accident_id):
@@ -134,32 +134,32 @@ if type(s3_input_length) is not int:
 
 if type(s3_input_dir) is not str:
     logger.error('input_dir should be string.')
-    return_response(999, "Invalid parameter", "input_dir should be string.")
+    return_response(999, "Invalid parameter", "Invalid parameter: input_dir")
     sys.exit()
 
 if len(bytes(s3_input_dir, encoding='utf-8')) != len(s3_input_dir):
     logger.error('input_dir should be encoded in utf-8.')
-    return_response(999, "Invalid parameter", "input_dir should be encoded in utf-8.")
+    return_response(999, "Invalid parameter", "Invalid parameter: input_dir")
     sys.exit()
 
 if type(s3_output_file) is not str:
     logger.error('output_file should be string.')
-    return_response(999, "Invalid parameter", "output_file should be string.")
+    return_response(999, "Invalid parameter", "Invalid parameter: output_file")
     sys.exit()
 
 if len(bytes(s3_output_file, encoding='utf-8')) != len(s3_output_file):
     logger.error('output_file should be encoded in utf-8.')
-    return_response(999, "Invalid parameter", "output_file should be encoded in utf-8.")
+    return_response(999, "Invalid parameter", "Invalid parameter: output_file")
     sys.exit()
 
 if type(s3_progress_file) is not str:
     logger.error('progress_file should be string.')
-    return_response(999, "Invalid parameter", "progress_file should be string.")
+    return_response(999, "Invalid parameter", "Invalid parameter: progress_file")
     sys.exit()
 
 if len(bytes(s3_progress_file, encoding='utf-8')) != len(s3_progress_file):
     logger.error('progress_file should be encoded in utf-8.')
-    return_response(999, "Invalid parameter", "progress_file should be encoded in utf-8.")
+    return_response(999, "Invalid parameter", "Invalid parameter: progress_file")
     sys.exit()
 
 if not type(vertical_angle) in [int, float]:
@@ -189,8 +189,8 @@ data_dir = '/tmp'
 try:
     accident_dir_path = os.path.join(data_dir, accident_id) # /tmp/<id>
 except:
-    logger.error('id should be Half-width alphanumeric characters.')
-    return_response(1000, "Invalid id", "id should be Half-width alphanumeric characters.")
+    logger.error('id should be string.')
+    return_response(1000, "Invalid id", "id should be text-format")
     sys.exit()
 
 images_dir_path = os.path.join(accident_dir_path, "images") # /tmp/<id>/images
@@ -220,7 +220,7 @@ if pid == 0:
         progress = 10
         write_status(inference_type, 200, "Images downloaded","Images downloaded", progress, accident_dir_path, s3_progress_file)
     except:
-        logger.critical(f'Image "{s3_file_path}" could not be downloaded.')
+        logger.critical('Image could not be downloaded.')
         write_status(inference_type, 1100, "Image download error", "Image could not be downloaded.", progress, accident_dir_path, s3_progress_file)
         sys.exit()
 
@@ -229,8 +229,6 @@ if pid == 0:
 
     subprocess.call(["python3", path + src_name, str(inference_type), accident_id, "1", str(s3_input_length), accident_dir_path, s3_output_file, s3_progress_file, json.dumps(additional_args)])
     sys.exit()
-else:
-    os.waitpid(pid,0)
 
 return_response(200, '', '')
 sys.exit()
