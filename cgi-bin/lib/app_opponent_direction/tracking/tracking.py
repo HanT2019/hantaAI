@@ -40,7 +40,7 @@ def load_yolo_results(car_detection_result_path):
             frame_result = []
 
             for car in frame_data['cars']:
-                x, y, w, h = xywh_from_cxcywh(int(car['bbox']['x']), int(car['bbox']['y']), int(car['bbox']['w']), int(car['bbox']['h']))
+                x, y, w, h = xywh_from_cxcywh(int(car['x']), int(car['y']), int(car['w']), int(car['h']))
                 frame_result.append((x, y, w, h))
 
             yolo_results.append(frame_result)
@@ -246,10 +246,6 @@ def track_cars(input_img_dir, output_img_dir, car_detection_result_path, keyfram
 
         if len(key_frames) == key_frames_length:
             break
-
-        # TODO: uncomment this
-        # key_frames_length = len(key_frames)
-        # track_frames = _linear_prediction(key_frames)
 
         # Progress report
         progress = 0.1 + 0.6*(float(i + 1)/float(len(track_frames)))

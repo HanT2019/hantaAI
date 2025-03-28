@@ -10,9 +10,10 @@ from auxiliary_start_code_detector.detect import detect
 from mylogger import getLogger
 
 logger = getLogger(__name__)
-inference_type = get_inference_type('app_opponent_direction')
 
 def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_file, s3_progress_file):
+    inference_type = get_inference_type('app_opponent_direction')
+
     return_dict = {}
     result_data = {'id': accident_id}
     judgement_data = {'opponent_start_code': '00', 'opponent_direction_code': '00'}
@@ -59,4 +60,3 @@ if __name__ == '__main__':
         main(args[1], args[2], int(args[3]), int(args[4]), args[5], args[6], args[7])
     except:
         logger.critical(traceback.print_exc())
-        write_status(inference_type, 500, 'Internal error', 'Internal error', 100, args[5], args[7])

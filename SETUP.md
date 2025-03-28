@@ -31,15 +31,6 @@ $ sudo vi /etc/logrotate.d/hanta
 */
 $ sudo logrotate -dv /etc/logrotate.d/hanta
 
-// Disable PrivateTmp
-$ sudo cp /usr/lib/systemd/system/apache2.service /etc/systemd/system/
-$ sudo chmod 777 /etc/systemd/system/apache2.service
-$ sudo vi /etc/systemd/system/apache2.service
-/*
-PrivateTmp=true　→　PrivateTmp=false
-*/
-$ sudo systemctl daemon-reload
-
 // install cuda
 $ cd ~
 $ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
@@ -73,7 +64,6 @@ $ sudo pip3 install boto3
 $ sudo pip3 install opencv-python
 $ sudo pip3 install image
 $ sudo pip3 install ffmpy
-$ sudo pip3 install requests
 $ sudo pip3 install h5py==2.10.0
 $ sudo pip3 install tensorflow-gpu==1.14.0 --ignore-installed
 $ sudo pip3 install Keras==2.3.1

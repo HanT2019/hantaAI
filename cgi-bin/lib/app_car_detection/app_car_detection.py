@@ -14,7 +14,6 @@ from image_type_manager import is_jpg
 from mylogger import getLogger
 
 logger = getLogger(__name__)
-inference_type = get_inference_type('app_car_detection')
 
 INFERENCE_ROOT = '/var/www/cgi-bin/lib/app_car_detection/'
 STATIC_PARAMS = {
@@ -35,6 +34,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
     yolo = Yolo(model_path, anchors_path, classes_path)
 
     progress = 10
+    inference_type = get_inference_type('app_car_detection')
 
     frame_array = []
 
@@ -66,11 +66,12 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
             w = np.floor(right - left).astype('int32')
             h = np.floor(bottom - top).astype('int32')
 
-            detected_object = {'id': str(object_id), 'bbox': {}, 'bev': None}
-            detected_object['bbox']['x'] = int(x)
-            detected_object['bbox']['y'] = int(y)
-            detected_object['bbox']['w'] = int(w)
-            detected_object['bbox']['h'] = int(h)
+            detected_object = {}
+            detected_object['id'] = object_id
+            detected_object['x'] = int(x)
+            detected_object['y'] = int(y)
+            detected_object['w'] = int(w)
+            detected_object['h'] = int(h)
 
             object_array.append(detected_object)
             object_id += 1
@@ -96,4 +97,3 @@ if __name__ == '__main__':
         main(args[1], args[2], int(args[3]), int(args[4]), args[5], args[6], args[7])
     except:
         logger.critical(traceback.print_exc())
-        write_status(inference_type, 500, 'Internal error', 'Internal error', 100, args[5], args[7])

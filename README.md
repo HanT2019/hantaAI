@@ -10,8 +10,6 @@ There are five apps as follows.
 |  3  |  app_self_direction  |
 |  4  |  app_opponent_direction  |
 |  5  |  app_signal_detection  |
-|  6  |  app_opponent_speed  |
-|  7  |  app_3dbb_detection  |
 
 Please develop each application by following steps.
 
@@ -124,18 +122,4 @@ Default output format [*****]: (fill in "JSON")
 2. move to the directory which has image's folder and upload images by using this command
 ```
 $ aws s3 cp LOCAL_FILE s3://{BUCKET_NAME}/REMOTE_PATH/ --recursive
-```
-
-
-# Test Commands on UG AWS
-```
-curl -X POST -i 'http://localhost/cgi-bin/cars.py' --data '{"id": "testmov001", "inference_type": 7, "input_dir": "inputs/testmov001", "input_file_last_no": 50, "output_file": "outputs/testmov001/cars.json", "progress_file": "outputs/testmov001/cars_status.json", "vertical_angle": 71.5, "horizontal_angle": 139.5}'
-
-curl -X POST -i 'http://localhost/cgi-bin/inference.py' --data '{"id": "testmov001", "inference_type": 6, "input_dir": "inputs/testmov001", "output_file": "outputs/testmov001/speeds.json", "progress_file": "outputs/testmov001/speeds_status.json", "start_frame": {"frame_no": 17, "x": 684, "y": 309, "w": 19, "h": 21}, "end_frame": {"frame_no": 32, "x": 886, "y": 358, "w": 231, "h": 255}, "fps": 10.0}'
-
-curl -X POST -i 'http://localhost/cgi-bin/inference.py' --data '{"id": "27", "inference_type": 6, "input_dir": "inputs/27", "output_file": "outputs/27/intersection.json", "progress_file": "outputs/27/intersection_status.json", "start_frame": {"frame_no": 1, "x": 459, "y": 437, "w": 43, "h": 26}, "end_frame": {"frame_no": 166, "x": 147, "y": 455, "w": 295, "h": 348}, "fps": 10.0}'
-
-curl -X POST -i 'http://localhost/cgi-bin/status.py' --data '{"id": "27", "inference_type": 1}'
-
-curl -X POST -H "Content-Type: application/json" -d '{"accident_dir_path": "/tmp/27", "start_no": 1, "end_no": 180, "vfov": 71.5, "hfov": 139.5, "width": 1280, "height": 720}' http://localhost:8080/
 ```

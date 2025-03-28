@@ -11,7 +11,6 @@ from reshape_return_dict import Method, reshape
 from mylogger import getLogger
 
 logger = getLogger(__name__)
-inference_type = get_inference_type('app_self_direction')
 
 def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_file, s3_progress_file):
     return_dict = {}
@@ -34,7 +33,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
         for idx_f ,data in enumerate(data['result']['frames']):
             if idx_f in range(start_no, end_no + 1):
                 for d in data['cars']:
-                    ret[idx_f - start_no].append(xywh2xyxy((d['bbox']['x'],d['bbox']['y'],d['bbox']['w'],d['bbox']['h']),W,H))
+                    ret[idx_f - start_no].append(xywh2xyxy((d['x'],d['y'],d['w'],d['h']),W,H))
 
         return ret
 
@@ -144,6 +143,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
     return_dict['result'] = result_data
     return_dict = reshape(return_dict, method=Method.CENTRAL)
 
+    inference_type = get_inference_type('app_self_direction')
     write_result(inference_type, return_dict, ec2_output_dir, s3_output_file)
     write_status(inference_type, 200, '', '', 100, ec2_output_dir, s3_progress_file)
 
@@ -153,4 +153,3 @@ if __name__ == '__main__':
         main(args[1], args[2], int(args[3]), int(args[4]), args[5], args[6], args[7])
     except:
         logger.critical(traceback.print_exc())
-        write_status(inference_type, 500, 'Internal error', 'Internal error', 100, args[5], args[7])

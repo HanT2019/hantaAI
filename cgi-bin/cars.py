@@ -101,22 +101,6 @@ except:
     return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
-try:
-    param_name="vertical_angle"
-    vertical_angle = request_json["vertical_angle"]
-except:
-    logger.error(f'Invalid parameter {param_name}')
-    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
-    sys.exit()
-
-try:
-    param_name="horizontal_angle"
-    horizontal_angle = request_json["horizontal_angle"]
-except:
-    logger.error(f'Invalid parameter {param_name}')
-    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
-    sys.exit()
-
 if len(bytes(accident_id, encoding='utf-8')) != len(accident_id):
     logger.error('id should be Half-width alphanumeric characters.')
     return_response(1000, "Invalid id", "id should be Half-width alphanumeric characters.")
@@ -162,26 +146,11 @@ if len(bytes(s3_progress_file, encoding='utf-8')) != len(s3_progress_file):
     return_response(999, "Invalid parameter", "Invalid parameter: progress_file")
     sys.exit()
 
-if not type(vertical_angle) in [int, float]:
-    logger.error('vertical_angle should be float number.')
-    return_response(1004, 'Invalid vertical_angle', 'vertical_angle should be float number.')
-    sys.exit()
-
-if not type(horizontal_angle) in [int, float]:
-    logger.error('horizontal_angle should be float number.')
-    return_response(1004, 'Invalid horizontal_angle', 'horizontal_angle should be float number.')
-    sys.exit()
-
-additional_args = {
-    'vertical_angle': vertical_angle,
-    'horizontal_angle': horizontal_angle
-}
-
 valid_flag = check_inference(inference_type)
 
-if valid_flag == 0 or inference_type not in [1, 7]:
-    logger.error('inference_type should be 1 or 7.')
-    return_response(1003, 'Invalid inference_type: (Invalid number)', 'inference_type should be 1 or 7.')
+if valid_flag == 0 or inference_type != 1:
+    logger.error('inference_type should be 1.')
+    return_response(1003, 'Invalid inference_type: (Invalid number)', 'inference_type should be 1.')
     sys.exit()
 
 data_dir = '/tmp'
@@ -200,7 +169,6 @@ if pid == 0:
     setproctitle("inference_process")
     if not os.path.exists(accident_dir_path):
         os.mkdir(accident_dir_path)
-        os.chmod(accident_dir_path, 0o777)
     if not os.path.exists(images_dir_path):
         os.mkdir(images_dir_path)
     else:
@@ -227,7 +195,7 @@ if pid == 0:
     path = "/var/www/cgi-bin/"
     src_name = "process.py"
 
-    subprocess.call(["python3", path + src_name, str(inference_type), accident_id, "1", str(s3_input_length), accident_dir_path, s3_output_file, s3_progress_file, json.dumps(additional_args)])
+    subprocess.call(["python3", path + src_name, str(inference_type), accident_id, "1", str(s3_input_length), accident_dir_path, s3_output_file, s3_progress_file])
     sys.exit()
 
 return_response(200, '', '')

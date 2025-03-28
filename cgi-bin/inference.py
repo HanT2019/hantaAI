@@ -115,14 +115,6 @@ except:
     return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
     sys.exit()
 
-try:
-    param_name="fps"
-    fps = request_json["fps"]
-except:
-    logger.error(f'Invalid parameter {param_name}')
-    return_response(999, "Invalid parameter", "Invalid parameter: "+param_name)
-    sys.exit()
-
 if len(bytes(accident_id, encoding='utf-8')) != len(accident_id):
     logger.error('id should be Half-width alphanumeric characters.')
     return_response(1000, "Invalid id", "id should be Half-width alphanumeric characters.")
@@ -163,19 +155,10 @@ if len(bytes(s3_progress_file, encoding='utf-8')) != len(s3_progress_file):
     return_response(999, "Invalid parameter", "Invalid parameter: progress_file")
     sys.exit()
 
-if not type(fps) in [int, float]:
-    logger.error('fps should be float number.')
-    return_response(1006, 'Invalid fps', 'fps should be float number.')
-    sys.exit()
-
-additional_args = {
-    'fps': fps
-}
-
 valid_flag = check_inference(inference_type)
 
-if valid_flag == 0 or inference_type in [1, 7]:
-    logger.error('inference_type should be in the range between 2 to 6.')
+if valid_flag == 0 or inference_type == 1:
+    logger.error('inference_type should be in the range between 2 to 5.')
     return_response(1003, 'Invalid inference_id: (Invalid number)', 'Invalid inference_id: (Invalid number)')
     sys.exit()
 
@@ -208,7 +191,6 @@ if pid == 0:
     setproctitle("inference_process")
     if not os.path.exists(accident_dir_path):
         os.mkdir(accident_dir_path)
-        os.chmod(accident_dir_path, 0o777)
     if not os.path.exists(images_dir_path):
         os.mkdir(images_dir_path)
 
@@ -242,22 +224,13 @@ if pid == 0:
             bucket.download_file(cars_result_path, cars_result_path)
     except:
         logger.critical('Image could not be downloaded.')
-        write_status(inference_type, 400, 'Invalid request', '"inference_type=1 [or 7]" is not executed yet.', progress, accident_dir_path, s3_progress_file)
+        write_status(inference_type, 400, 'Invalid request', '"inference_type=1" is not executed yet.', progress, accident_dir_path, s3_progress_file)
         sys.exit()
-
-    try:
-        bucket = bucket_setup_for_download()
-        cars_result_path = os.path.join(accident_dir_path, '7_result.json')
-
-        if not os.path.exists(cars_result_path):
-            bucket.download_file(cars_result_path, cars_result_path)
-    except:
-        pass
 
     path = "/var/www/cgi-bin/"
     src_name = "process.py"
 
-    subprocess.call(["python3", path + src_name, str(inference_type), accident_id, str(start_frame["frame_no"]), str(end_frame["frame_no"]), accident_dir_path, s3_output_file, s3_progress_file, json.dumps(additional_args)])
+    subprocess.call(["python3", path + src_name, str(inference_type), accident_id, str(start_frame["frame_no"]), str(end_frame["frame_no"]), accident_dir_path, s3_output_file, s3_progress_file])
     sys.exit()
 
 return_response(200, '', '')

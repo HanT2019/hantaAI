@@ -7,12 +7,12 @@ from lib.mylogger import getLogger
 logger = getLogger(__name__)
 
 def check_inference(infer_type):
-    if infer_type < 1 or 7 < infer_type:
+    if infer_type < 1 or 5 < infer_type:
         return 0
     else:
         return 1
 
-def main(inference_type, accident_id, start_no, end_no, accident_dir_path, s3_output_file, s3_progress_file, additional_args):
+def main(inference_type, accident_id, start_no, end_no, accident_dir_path, s3_output_file, s3_progress_file):
     infer_dir = "/var/www/cgi-bin/lib/"
     images_dir = os.path.join(accident_dir_path, 'images')
 
@@ -28,7 +28,7 @@ def main(inference_type, accident_id, start_no, end_no, accident_dir_path, s3_ou
         start_time = datetime.datetime.now()
         logger.info(f'{inference_name} had been started at {start_time}.')
 
-        subprocess.call([pyenv_path + "python3", infer_dir + src_dir + src_name, accident_id, images_dir, str(start_no), str(end_no), accident_dir_path, s3_output_file, s3_progress_file, additional_args])
+        subprocess.call([pyenv_path + "python3", infer_dir + src_dir + src_name, accident_id, images_dir, str(start_no), str(end_no), accident_dir_path, s3_output_file, s3_progress_file])
 
         finish_time = datetime.datetime.now()
         logger.info(f'{inference_name} had been finished at {finish_time}, spent {finish_time - start_time}.')
@@ -38,4 +38,4 @@ def main(inference_type, accident_id, start_no, end_no, accident_dir_path, s3_ou
 if __name__ == '__main__':
     args = sys.argv
     logger.info(f'Subprocess Args: {args}, At: {__file__}')
-    main(int(args[1]), args[2], int(args[3]), int(args[4]), args[5], args[6], args[7], args[8])
+    main(int(args[1]), args[2], int(args[3]), int(args[4]), args[5], args[6], args[7])
