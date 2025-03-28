@@ -167,23 +167,19 @@ def moving_average(f, N=5):
 
 def save_cropped_cars(images_list, track_frames, output_dir):
     for frame in track_frames:
-        try:
-            img_path = images_list[frame[0] - 1]
+        img_path = images_list[frame[0] - 1]
 
-            left = int(frame[1])
-            top = int(frame[2])
-            right = left + int(frame[3])
-            bottom = top + int(frame[4])
+        left = int(frame[1])
+        top = int(frame[2])
+        right = left + int(frame[3])
+        bottom = top + int(frame[4])
 
-            output_img_path = os.path.join(output_dir, os.path.basename(img_path))
+        output_img_path = os.path.join(output_dir, os.path.basename(img_path))
 
-            img = cv2.imread(img_path)
-            cropped_img = img[top:bottom, left:right, :]
-            resized_img = cv2.resize(cropped_img, (224, 224))
-            cv2.imwrite(output_img_path, resized_img)
-
-        except:
-            pass
+        img = cv2.imread(img_path)
+        cropped_img = img[top:bottom, left:right, :]
+        resized_img = cv2.resize(cropped_img, (224, 224))
+        cv2.imwrite(output_img_path, resized_img)
 
 def track_cars(input_img_dir, output_img_dir, car_detection_result_path, keyframes_path, ec2_output_dir, s3_output_file, s3_progress_file):
     inference_type = get_inference_type('app_opponent_direction')
@@ -251,8 +247,9 @@ def track_cars(input_img_dir, output_img_dir, car_detection_result_path, keyfram
         if len(key_frames) == key_frames_length:
             break
 
-        key_frames_length = len(key_frames)
-        track_frames = linear_prediction(key_frames)
+        # TODO: uncomment this
+        # key_frames_length = len(key_frames)
+        # track_frames = _linear_prediction(key_frames)
 
         # Progress report
         progress = 0.1 + 0.6*(float(i + 1)/float(len(track_frames)))

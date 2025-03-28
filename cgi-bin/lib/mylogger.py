@@ -7,7 +7,7 @@ def getLogger(name):
 
     handler = logging.FileHandler(filename = '/var/log/hanta_log/hanta.log')
     handler.setLevel(logging.INFO)
-    handler.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)8s %(message)s"))
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)8s %(message)s"))
 
     logger.addHandler(handler)
 

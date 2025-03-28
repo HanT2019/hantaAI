@@ -4,7 +4,7 @@ import subprocess
 from lib.inference_manager import get_inference_name
 
 from lib.mylogger import getLogger
-logger = getLogger(__file__)
+logger = getLogger(__name__)
 
 def check_inference(infer_type):
     if infer_type < 1 or 7 < infer_type:
