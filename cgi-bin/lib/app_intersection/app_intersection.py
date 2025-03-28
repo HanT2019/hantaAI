@@ -1,4 +1,6 @@
+import os
 import sys
+import json
 import traceback
 sys.path.append('/var/www/cgi-bin/lib')
 from file_output import write_status, write_result
@@ -16,6 +18,14 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
     result_data['frames'] = predict_for_frames(images_dir, start_no, end_no, ec2_output_dir, s3_output_file, s3_progress_file)
 
     return_dict['result'] = result_data
+
+    ###################################################################################
+    # Temporary save frame results for debugging.
+    file_path = os.path.join(ec2_output_dir, str(inference_type) + '_tmp_result.json')
+    with open(file_path, 'w') as fout:
+        fout.write(json.dumps(return_dict))
+    ###################################################################################
+
     return_dict = reshape(return_dict, method=Method.THREE_SEC_MODE)
 
     write_result(inference_type, return_dict, ec2_output_dir, s3_output_file)

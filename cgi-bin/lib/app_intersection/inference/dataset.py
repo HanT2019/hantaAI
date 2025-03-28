@@ -24,7 +24,7 @@ class InferenceDataset(utils.data.Dataset):
     def __getitem__(self, idx):
         image_file, no = self.img_list[idx]
 
-        image = Image.open(image_file)
+        image = Image.open(image_file).convert('RGB')
         if self.transform:
             image = self.transform(image)
 

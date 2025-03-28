@@ -230,6 +230,7 @@ if pid == 0:
 
     try:
         bucket = bucket_setup_for_download()
+        logger.info(f'start_frame["frame_no"] = {start_frame["frame_no"]}, end_frame["frame_no"] = {end_frame["frame_no"]}')
         for i in range(start_frame["frame_no"], end_frame["frame_no"]+1):
             save_as = images_dir_path + '/' + '{:0=4}.jpg'.format(i)
             if not os.path.exists(save_as):
@@ -251,8 +252,6 @@ if pid == 0:
     try:
         bucket = bucket_setup_for_download()
         cars_result_path = os.path.join(accident_dir_path, '1_result.json')
-
-        # if not os.path.exists(cars_result_path):
         bucket.download_file(cars_result_path, cars_result_path)
     except:
         logger.error('"inference_type=1 [or 7]" is not executed yet.')

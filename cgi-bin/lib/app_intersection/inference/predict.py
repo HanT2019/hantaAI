@@ -28,7 +28,6 @@ CLASSES = [
     {'name': 'others', 'id': '00'},
     {'name': '|', 'id': '04'},
 ]
-
 def predict_for_frames(images_dir, start_no, end_no, ec2_output_dir, s3_output_file, s3_progress_file):
     result_list = []
 
