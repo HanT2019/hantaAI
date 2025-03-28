@@ -7,7 +7,7 @@ from reshape_return_dict import Method, reshape
 from inference.predict import predict_for_frames
 from mylogger import getLogger
 
-logger = getLogger(__file__)
+logger = getLogger(__name__)
 inference_type = get_inference_type('app_intersection')
 
 def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_file, s3_progress_file):
@@ -26,4 +26,5 @@ if __name__ == '__main__':
         args = sys.argv
         main(args[1], args[2], int(args[3]), int(args[4]), args[5], args[6], args[7])
     except:
+        logger.critical(traceback.print_exc())
         write_status(inference_type, 500, 'Internal error', 'Internal error', 100, args[5], args[7])

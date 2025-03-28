@@ -14,7 +14,7 @@ from image_type_manager import is_jpg
 from reshape_return_dict import reshape_signal
 from mylogger import getLogger
 
-logger = getLogger(__file__)
+logger = getLogger(__name__)
 inference_type = get_inference_type('app_signal_detection')
 
 INFERENCE_ROOT = '/var/www/cgi-bin/lib/app_signal_detection/'
@@ -123,4 +123,5 @@ if __name__ == '__main__':
         args = sys.argv
         main(args[1], args[2], int(args[3]), int(args[4]), args[5], args[6], args[7])
     except:
+        logger.critical(traceback.print_exc())
         write_status(inference_type, 500, 'Internal error', 'Internal error', 100, args[5], args[7])

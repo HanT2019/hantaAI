@@ -13,7 +13,7 @@ from inference_manager import get_inference_type, get_inference_url
 from file_output import write_status, write_result
 from mylogger import getLogger
 
-logger = getLogger(__file__)
+logger = getLogger(__name__)
 inference_type = get_inference_type('app_opponent_speed')
 
 
@@ -23,7 +23,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
     # POSTパラメータ、GETパラメータ作成
     additional_args = json.loads(additional_args_str)
     if not 'fps' in additional_args.keys():
-        logger.critical('"fps" is not found.')
+        logger.error('"fps" is not found')
         write_status(inference_type, 500, 'Internal error', '"fps" is not found', progress, ec2_output_dir, s3_progress_file)
         sys.exit()
 
@@ -36,7 +36,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
 
     keyframes_path = os.path.join(ec2_output_dir, 'keyframes.txt')
     if not os.path.exists(keyframes_path):
-        logger.critical('start/end frame information could not be read.')
+        logger.error('start/end frame information could not be read.')
         write_status(inference_type, 500, 'Internal error', 'start/end frame information could not be read.', progress, ec2_output_dir, s3_progress_file)
         sys.exit()
 
@@ -55,7 +55,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
         data = post_parameters
     )
     if response.status_code != 200:
-        logger.critical('The docker container for app_opponent_speed returned the following error: ' + response.text)
+        logger.error(response.text)
         write_status(inference_type, 500, 'Internal error', 'Inference process failed', progress, ec2_output_dir, s3_progress_file)
         sys.exit()
 
@@ -63,7 +63,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
     while True:
         response = requests.get(f'http://{get_inference_url(inference_type)}/progress/')
         if response.status_code != 200:
-            logger.critical('The docker container for app_opponent_speed returned the following error: ' + response.text)
+            logger.error(response.text)
             write_status(inference_type, 500, 'Internal error', 'Inference process failed', progress, ec2_output_dir, s3_progress_file)
             sys.exit()
 
@@ -79,7 +79,7 @@ def main(accident_id, images_dir, start_no, end_no, ec2_output_dir, s3_output_fi
     # 推論結果 GET
     response = requests.get(f'http://{get_inference_url(inference_type)}/?{get_parameters}')
     if response.status_code != 200:
-        logger.critical('The docker container for app_opponent_speed returned the following error: ' + response.text)
+        logger.error(response.text)
         write_status(inference_type, 500, 'Internal error', 'Inference process failed', progress, ec2_output_dir, s3_progress_file)
         sys.exit()
 
@@ -94,4 +94,5 @@ if __name__ == '__main__':
         args = sys.argv
         main(args[1], args[2], int(args[3]), int(args[4]), args[5], args[6], args[7], args[8])
     except:
+        logger.critical(traceback.print_exc())
         write_status(inference_type, 500, 'Internal error', 'Inference container not running', 100, args[5], args[7])

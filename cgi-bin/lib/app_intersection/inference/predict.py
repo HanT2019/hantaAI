@@ -10,21 +10,11 @@ from .dataset import InferenceDataset
 from .resnet import ResNet
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-#former classes with (maybe) wrong order
-#CLASSES = [
-#    {'name': '+', 'id': '03'},
-#    {'name': '-|', 'id': '06'},
-#    {'name': 'T', 'id': '05'},
-#    {'name': '|-', 'id': '07'},
-#    {'name': 'others', 'id': '00'},
-#    {'name': '|', 'id': '04'},
-#]
-
 CLASSES = [
     {'name': '+', 'id': '03'},
     {'name': '-|', 'id': '06'},
-    {'name': '|-', 'id': '07'},
     {'name': 'T', 'id': '05'},
+    {'name': '|-', 'id': '07'},
     {'name': 'others', 'id': '00'},
     {'name': '|', 'id': '04'},
 ]
